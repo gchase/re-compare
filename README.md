@@ -41,7 +41,7 @@ A modular configurable platform for comparing pattern matching algorithms with s
 Install python 3, then run the following:
 ```bash
 $ git clone https://github.com/gchase/re-compare
-$ pip3 install numpy pandas ply tqdm cython https://github.com/andreasvc/pyre2/archive/master.zip
+$ pip3 install numpy pandas ply tqdm pytest cython https://github.com/andreasvc/pyre2/archive/master.zip
 ```
 
 to run commands: 
@@ -49,6 +49,11 @@ to run commands:
 cd re-compare/re_compare
 ```
 where the main execution file `re_compare.py` may be executed.
+
+To run tests:
+```bash
+pytest tests
+```
 
 ## Getting Started
 re-compare is constructed of 3 major modules

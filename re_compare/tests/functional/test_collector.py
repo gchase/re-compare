@@ -18,7 +18,7 @@ PROTEIN_TASK_PATH = "tests/functional/protein"
 def collector(mocker):
     c = Collector(DUMMY_TASK_PATH)
     mocker.patch.object(c, '_perform_measurements')
-    mocker.patch.object(c, '_download_textfile')
+    mocker.patch.object(c, '_download_texts')
     return c
 
 
@@ -26,8 +26,8 @@ def test_downloads_texts(collector, mocker):
     mocker.patch.object(collector, '_convert_regex_to_canonical_form')
     collector.collect()
     url = importlib.import_module(
-        ".".join(DUMMY_TASK_PATH.split("/")) + "._config").TEXT_URL
-    collector._download_textfile.assert_called_once_with(url)
+        ".".join(DUMMY_TASK_PATH.split("/")) + "._config").TEXT_URLS
+    collector._download_texts.assert_called_once_with(url)
 
 
 def test_converts_regexes(collector, mocker, tmpdir, monkeypatch):

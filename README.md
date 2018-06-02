@@ -38,7 +38,7 @@ A modular configurable platform for comparing pattern matching algorithms with s
 ## Installation
 **TEMPORARY**
 ```bash
-$ git clone https://github.com/gzohari/re-compare
+$ git clone https://github.com/gchase/re-compare
 ```
 
 ## Getting Started

@@ -1,0 +1,79 @@
+This project is meant for converting a regular expression abstract grammar from a given syntax to to python re2 library syntax.
+We are using thy ply(9python lex-yacc library in order to do so generally)
+For more information about ply please view the official site at:
+    http://www.dabeaz.com/ply/
+
+main idea:
+    Build a generic ast (abstract syntax tree) from an expression in your grammar.
+    In order to build the ast use the ply library.
+    Now scan the tree in-order and replace the nodes representing grammar specific operations and terms with re2 nodes.
+    Get the expression string for the re2 tree.
+
+How to build an ast:
+    First of all you need to define your grammar tokens.
+    Easiest  way to do so is using literal strings.
+    In some complex situation there's a need for regular expressions.
+    first define the logical name of each token in a 'tokens' variable.
+    For example:
+        tokens = (
+        'DIGIT',
+        'PLUS',
+    )
+
+    Now define regular expression patterns to match each token using t_<TOKEN_NAME> convention:
+        t_PLUS = r'\+'
+        t_PLUS = r'[0-9]'
+
+    If needed you can also create a function instead of a single regex.
+
+    An error handler can be defined like this:
+        def t_error(self, t):
+            print("Illegal character '%s'" % t.value[0])
+            t.lexer.skip(1)
+
+    After you got your lexer working you need to define the grammar rules.
+    ply allows generic LALR grammars which should be ok for most reasonable syntaxes
+    Some grammars may have conflicts regarding which rule should be used in the case where multiple rules can derive the samee expression.
+    For example we want a calculator to use multiplication before addition in an expression like '1+2*3'
+    In order to solve these conflicts use the 'precedence' table
+        precedence = (
+        ('left', 'MULTIPLY'),
+        ('left', 'PLUS'),
+        )
+    The precedence table specifies the order between operators and the correct way in which to derive the expressions.
+    In this example multiplication will precede addition and the left argument would be calculated first.
+    Finally, its time to define the actual grammar rules.
+    Use the convention p_<RULE_NAME>
+    I suggest using a class for the parser but it's not necessary.
+    Rules are defined like the following example:
+        def p_star(self, p):
+            """expression : expression STAR"""
+            p[0] = Re2StarNode(p[1])
+        The docstring is mandatory and tells ply exactly which expressions to match for this rule.
+        In our case we match any expression followed by a STAR token ('*') in re2 syntax.
+
+        p is an array of the tokens of the expression we are currently deriving.
+        After the method ends p[0] holds the result of the current expression, in our case an ast.
+        We create an ast node for a star token using the ast of the sub-expression in p[1] which was already calculated.
+    Ast nodes all inherit from the base class Ast in generic_ast.py
+    They all have a similar structure.
+    Here's an example of an OR ast node for re2 grammar:
+        class Re2OrNode(Ast):
+        def __init__(self, left_son, right_son):
+            super(Re2OrNode, self).__init__()
+            self.sons = [left_son, right_son]
+
+        def to_re2_string(self):
+            return '%s|%s' % (self.sons[0].to_re2_string(), self.sons[1].to_re2_string())
+    The or node has two sons (ast's of two expressions).
+    It implements the to_re2_string() method which prints the expression in re2 syntax, using the to_re2_string() method of the two sons.
+
+    For more information and example see the official documentation of ply.
+
+
+Editing a parser:
+    The parsers here are written in optimized mode.
+    While much faster when parsing multiple strings, optimized mode also creates temporary files.
+    These files contain the state machine for the created parser (and some implementation)
+    Note that changing the python parser and running again will *NOT* change the state machine saved in the file.
+    Use ./removeTempFiles.sh from the project's directory or remove them manually.

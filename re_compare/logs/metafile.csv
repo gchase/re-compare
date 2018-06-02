@@ -1,0 +1,2 @@
+filename,taskname,alg,regex.hardness,text.length
+python_pattern_recog_easy_10e3.csv,tasks/random,python_pattern_recog,easy,10e3

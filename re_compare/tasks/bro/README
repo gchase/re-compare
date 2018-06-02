@@ -1,0 +1,6 @@
+How regexes were grepped:
+
+1. download bro source code
+2. ack -ih 'file-magic \/' | grep -v "#"  | cut -d" " -f 2- > ~/bro_regexes
+3. ack -ih '^\s*payload \/*\/'   | sed 's/^ *//;s/ *$//' | cut -d" " -f 2- >> ~/bro_regexes
+4. remove trailing and leading slashes, also remove manully 2-3 bad entries

@@ -1,0 +1,14 @@
+all_matches
+filename,dependant,parameters
+all_matches_cut_0,length,"dict_items([('hardness', 'easy-protein-patterns')])"
+all_matches_cut_1,length,"dict_items([('hardness', 'harder-protein-patterns')])"
+all_matches_cut_2,hardness,"dict_items([('length', '10e3')])"
+all_matches_cut_3,hardness,"dict_items([('length', '10e5')])"
+all_matches_cut_4,hardness,"dict_items([('length', '10e7')])"
+first_match
+filename,dependant,parameters
+first_match_cut_0,length,"dict_items([('hardness', 'easy-protein-patterns')])"
+first_match_cut_1,length,"dict_items([('hardness', 'harder-protein-patterns')])"
+first_match_cut_2,hardness,"dict_items([('length', '10e3')])"
+first_match_cut_3,hardness,"dict_items([('length', '10e5')])"
+first_match_cut_4,hardness,"dict_items([('length', '10e7')])"

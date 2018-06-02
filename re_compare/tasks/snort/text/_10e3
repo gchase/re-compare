@@ -1,0 +1,21 @@
+Frame 1: 54 bytes on wire (432 bits), 54 bytes captured (432 bits)
+    Encapsulation type: Ethernet (1)
+    Arrival Time: Mar 11, 1999 15:00:03.210529000 IST
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 921157203.210529000 seconds
+    [Time delta from previous captured frame: 0.000000000 seconds]
+    [Time delta from previous displayed frame: 0.000000000 seconds]
+    [Time since reference or first frame: 0.000000000 seconds]
+    Frame Number: 1
+    Frame Length: 54 bytes (432 bits)
+    Capture Length: 54 bytes (432 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: eth:llc:data]
+IEEE 802.3 Ethernet 
+    Destination: HP_61:aa:c9 (08:00:09:61:aa:c9)
+        Address: HP_61:aa:c9 (08:00:09:61:aa:c9)
+        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: HP_61:aa:c9 (08:00:09:61:aa:c9)
+        Address: HP_

@@ -1,0 +1,9 @@
+#!/usr/local/bin/python3
+
+from utils import re_aux
+import sys
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    args.append("python")
+    re_aux.main(*args)

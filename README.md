@@ -37,9 +37,18 @@ A modular configurable platform for comparing pattern matching algorithms with s
 
 ## Installation
 **TEMPORARY**
+
+Install python 3, then run the following:
 ```bash
 $ git clone https://github.com/gchase/re-compare
+$ pip3 install numpy pandas ply tqdm cython https://github.com/andreasvc/pyre2/archive/master.zip
 ```
+
+to run commands: 
+```bash
+cd re-compare/re_compare
+```
+where the main execution file `re_compare.py` may be executed.
 
 ## Getting Started
 re-compare is constructed of 3 major modules
@@ -63,7 +72,7 @@ Lets try to add our Alg , *Regexinator*, to re-compare and run it on the preset 
 ```
 Add this algorithm to the ALGORITHMS array at the re_comapre global config file:
 ```python
-  # <re_compare_root>/config.py
+  # re_compare/config.py
 
   ALGORITHMS = [
   	"re_compare/algorithms/baseline_alg_1",

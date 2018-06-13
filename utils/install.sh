@@ -26,5 +26,5 @@ make &&
 sudo make install &&
 cp ./grep ../re_compare/algorithms/modified_grep &&
 cd .. &&
-rm -rf grep-3.1 &&
+rm -rf grep-3.1 
 

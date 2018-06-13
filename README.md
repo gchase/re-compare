@@ -51,7 +51,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 Install dependincies with the following script (it'll require sudo for installing the baseline algorithms)
 ```bash
-sh utils/install.sh
+bash utils/install.sh
 ```
 
 Change directory into the main module, where the main execution file `re_compare.py` and the tests dir are located.

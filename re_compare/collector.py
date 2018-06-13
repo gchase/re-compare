@@ -149,8 +149,8 @@ class Collector:
             self.config = open(path(self.task, "_config.py"))
 
         if not os.listdir(self.text_files_dir):
-            task_config = importlib.import_module(
-                ".".join(path(self.task,"_config").split("/"))
+            task_config = importlib.import_module(".".join(
+                path(self.task, "_config").split("/")))
             if hasattr(task_config, "TEXT_URLS"):
                 self._download_texts(task_config.TEXT_URLS)
                 self._preprocess_text()
@@ -168,8 +168,8 @@ class Collector:
         canonical_regex_directory_path = os.path.join(
             self.task, 'tmp', "canonical_form_regex_files")
 
-        regex_type = importlib.import_module(
-            ".".join(path(self.task,"_config").split("/")).regex_type
+        regex_type = importlib.import_module(".".join(
+            path(self.task, "_config").split("/"))).regex_type
 
         protein_parser = ProteinParser()
         re2_parser = Re2Parser()

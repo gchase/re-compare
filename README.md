@@ -38,17 +38,26 @@ A modular configurable platform for comparing pattern matching algorithms with s
 ## Installation
 **TEMPORARY**
 
-Install python 3, then run the following:
+Install python 3.6.5, then clone the repo and cd into it:
 ```bash
 $ git clone https://github.com/gchase/re-compare
-$ pip3 install numpy pandas ply tqdm pytest cython https://github.com/andreasvc/pyre2/archive/master.zip
+$ cd re-compare
 ```
 
-to run commands: 
+add the directory into PYTHONPATH:
 ```bash
-cd re-compare/re_compare
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
-where the main execution file `re_compare.py` may be executed.
+
+Install dependincies with the following script (it'll require sudo for installing Google/re2 for the re2 baseline algorithm, and python3-tk):
+```bash
+sh utils/install.sh
+```
+
+Change directory into the main module, where the main execution file `re_compare.py` and the tests dir are located.
+```bash
+cd re_compare
+```
 
 To run tests:
 ```bash

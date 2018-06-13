@@ -49,7 +49,7 @@ add the directory into PYTHONPATH:
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
-Install dependincies with the following script (it'll require sudo for installing Google/re2 for the re2 baseline algorithm, and python3-tk):
+Install dependincies with the following script (it'll require sudo for installing the baseline algorithms)
 ```bash
 sh utils/install.sh
 ```

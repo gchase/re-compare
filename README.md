@@ -38,7 +38,7 @@ A modular configurable platform for comparing pattern matching algorithms with s
 ## Installation
 **TEMPORARY**
 
-Install python 3.6.5, then clone the repo and cd into it:
+Install python 3.6.5 (and pip3), then clone the repo and cd into it:
 ```bash
 $ git clone https://github.com/gchase/re-compare
 $ cd re-compare

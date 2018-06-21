@@ -441,7 +441,7 @@ talk about constrained random text generators  (or genrerators by regex fit)
 
 
 ## Contributing
-To contribute to the devlopment of re-compare, please contact Proffessor Benny Kimelfeld at fakemail@shtrudel.com
+To contribute to the devlopment of re-compare, please contact Dean Light at light.skep@gmail.com
 
 ## License
 	re-compare is released under the [MIT License](http://www.opensource.org/licenses/MIT).

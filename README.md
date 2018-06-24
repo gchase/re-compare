@@ -370,7 +370,7 @@ Here's an example of an OR ast node for re2 grammar:
 The or node has two sons (AST's of two expressions).
 It implements the `to_re2_string()` method which prints the expression in re2 syntax, using the `to_re2_string()` method of the two sons.
 
-For more information and examples see the official documentation of ply.
+For more information and examples see the official [documentation](http://www.dabeaz.com/ply) of ply.
 The ply [calculator](http://www.dabeaz.com/ply/example.html) covers all common features pretty well.
 
 **Editing a parser:**
@@ -383,7 +383,7 @@ Use `./removeTempFiles.sh` from the regex converter directory or remove them man
 ## Random regex generator
 We build an in house random regex generator to test re-compare.
 Its quite extendible and very easy to use.
-The random regex generator can be found at [TODO put path of regex gen] module.
+The random regex generator can be found in the re_compare/random_generator/random_gen.py module.
 Here is an example of our random regex generator
 ```python
 >>> operations = ["%s%s", "%s|%s", "%s?", "%s+", "%s*", "(%s)"]

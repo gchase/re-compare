@@ -1,8 +1,8 @@
 # This assumes current directory is the re-compare repository root
 
 # RE2-DEPENDINCIES
-pip3 install matplotlib numpy pandas ply tqdm pytest cython
-sudo apt install python3-tk
+pip3 install matplotlib numpy pandas ply tqdm pytest cython pytest-mock mocker &&
+sudo apt install python3-tk gnuplot &&
 
 # BASELINE ALGORITHM DEPENDINCIES
 # install re2

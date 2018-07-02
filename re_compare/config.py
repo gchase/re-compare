@@ -1,8 +1,10 @@
 """ out of all algorithms located in the algorithms dir, which ones should
 be used in the analysis
 """
+# ALGORITHMS = ("algorithms/python_pattern_recog",
+              # "algorithms/re2_pattern_recog", "algorithms/modified_grep")
 ALGORITHMS = ("algorithms/python_pattern_recog",
-              "algorithms/re2_pattern_recog", "algorithms/modified_grep")
+              "algorithms/re2_pattern_recog")
 """ configure the parameters used during the collection and analysis.
 1) The 'regex_space'/'text_space' keys shouldn't be changed or re-ordered,
 only their values should be configured.

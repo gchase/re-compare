@@ -211,7 +211,7 @@ class Analysis:
 
             for quartile in [Decimal(n) for n in [0.25, 0.5, 0.75]]:
                 fp.seek(0)
-                cmd = "tail +%d %s | head -1" % (
+                cmd = "tail -n +%d %s | head -1" % (
                     number_of_regexes_matched * quartile, fp.name)
                 raw_quartile = subprocess.check_output(cmd, shell=True) \
                                          .decode() \

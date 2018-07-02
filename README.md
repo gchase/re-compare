@@ -50,7 +50,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
 Install dependincies with the following script (it'll require sudo for installing the baseline algorithms)
-[//]: #( TODO add sudo to install)
+[//]: # ( TODO add sudo to install)
 ```bash
 bash utils/install.sh
 ```
@@ -60,7 +60,7 @@ Change directory into the main module, where the main execution file `re_compare
 cd re_compare
 ```
 
-[//]: #( TODO explain that run test is for system verification and for tutorials)
+[//]: # ( TODO explain that run test is for system verification and for tutorials)
 To run tests:
 ```bash
 pytest tests
@@ -86,7 +86,7 @@ Lets try to add our Alg , *Regexinator*, to re-compare and run it on the preset 
   # adding alg executable to alg directory
   mv ~/my_dir/Regexinator.o algorithms/
 ```
-[//]: #( TODO make a running example and make sure it is consistent with all graphs and future examples)
+[//]: # ( TODO make a running example and make sure it is consistent with all graphs and future examples)
 Add this algorithm to the ALGORITHMS array at the re_comapre global config file:
 ```python
   # re_compare/config.py
@@ -107,7 +107,7 @@ Now we run our algorithm
 
   ![runtime_2](doc/runtime_patterns_img.png)
 
-[//]: #( TODO explain with snap shot where the log and output format are, consider changing the name of logs since it is not debugging info but actual outputs)
+[//]: # ( TODO explain with snap shot where the log and output format are, consider changing the name of logs since it is not debugging info but actual outputs)
 After the process finishes, the logs directory is populated with measurements logs, created by the **Collector** module:
 
   ![logs_img](doc/logs_population.png)
@@ -146,7 +146,7 @@ and the output directory is populated with graphs, created by the **Analysis** m
 $ ./re_compare/re_compare --task <path_to_task>
 ```
 
-[//]: #( TODO explain what a task is brifly and link to the default taks and the task structure section)
+[//]: # ( TODO explain what a task is brifly and link to the default taks and the task structure section)
 Note that the configuration specified `config.py` must match the task (see documentation in [config](config.py))
 
 [Default](#Default-datasets) tasks, can be found in the tasks directory
@@ -154,7 +154,7 @@ Note that the configuration specified `config.py` must match the task (see docum
 $ ./re_compare/re_compare --task re_compare/tasks/<dir_name>
 ```
 
-[//]: #( TODO explain what the usage cases for cube pnly analysis are)
+[//]: # ( TODO explain what the usage cases for cube pnly analysis are)
 - To perform only the cube-analysis, given log-files of correct format (See [Log format](#log-format))
 ```
 $ ./re_compare/re_compare --log_files   <path/to/logfiles/>*
@@ -165,9 +165,9 @@ See documentation inside [config.py](config.py)
 
 
 ## Translator Syntaxes
-[//]: #( TODO rephrase this)
-[//]: #( TODO say python syntax and not re2 syntax, fix broken link to an explanation of python extended syntax)
-[//]: #( TODO explain that extended is both a supported syntax and the intermidiate represenataion and add the flowchart with the many-to-one-to-many explanation)
+[//]: # ( TODO rephrase this)
+[//]: # ( TODO say python syntax and not re2 syntax, fix broken link to an explanation of python extended syntax)
+[//]: # ( TODO explain that extended is both a supported syntax and the intermidiate represenataion and add the flowchart with the many-to-one-to-many explanation)
 The translator supports converting all supported syntaxes to python [re2](ocs.python.org/3/library/re.html) syntax.
 It also allows converting an re2 pattern to the basic syntax.
 
@@ -183,10 +183,10 @@ also supports escaped characters in both `\\n` or `\\t` format or `\\x00` format
 Full description of the proteins regex syntax can be found [here](http://www.hpa-bioinfotools.org.uk/ps_scan/PS_SCAN_PATTERN_SYNTAX.html).
 
 ## Adding algorithms
-[//]: #( TODO change the word pattern to regex globally)
+[//]: # ( TODO change the word pattern to regex globally)
 All pattern matching algorithms tested in this library have the following signature:
-[//]: #( TODO correct this to be an executible and explain in more detail what we require)
-[//]: #( TODO explain that each alg will run on all regexes and text pairs in the given task)
+[//]: # ( TODO correct this to be an executible and explain in more detail what we require)
+[//]: # ( TODO explain that each alg will run on all regexes and text pairs in the given task)
 ```python
 algorithm(pattern_string, path/to/textfile)
 ```
@@ -211,7 +211,7 @@ $ ./modified_grep "mooooooooo" example.txt
 ## Adding datasets
 The task structure is dependant on the **ordered** values in `config.PARAMETER_SPACE`. This dependency is what the section explains.
 For clarity, we assume the parameter space looks like this:
-[//]: #( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)
+[//]: # ( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)
 ```python
 PARAMETER_SPACE = OrderedDict({
 	'regex_space': [
@@ -223,9 +223,9 @@ PARAMETER_SPACE = OrderedDict({
 	]
 })
 ```
-[//]: #( TODO explain what both subdirectories are, make an ls example and link to default database folder and explain that they are in the same format)
-[//]: #( TODO explain whose name correspond to what maybe view of the configfiles)
-[//]: #( TODO make sure each config file is given a different name)
+[//]: # ( TODO explain what both subdirectories are, make an ls example and link to default database folder and explain that they are in the same format)
+[//]: # ( TODO explain whose name correspond to what maybe view of the configfiles)
+[//]: # ( TODO make sure each config file is given a different name)
 Both subdirectories have files with names that correspond to a selection of values from their space. Each such file start with either a `_` char, or `<some_prefix>_` as displayed below
 - The regex subdirectory has files whose names correspond with the `regex_space` in the `PARAMETER_SPACE`. So for the example above, the `regex` subdirectory will hold files with names
 ```text
@@ -234,9 +234,9 @@ _easy_shallow
 _hard_shallow
 _hard_deep
 ```
-[//]: #( TODO rephrase this paragraph)
-[//]: #( TODO add the grep problems into the git issues)
-[//]: #( TODO add that each file is 1 text document which is different from the regex case. Talk about future work in expanding this)
+[//]: # ( TODO rephrase this paragraph)
+[//]: # ( TODO add the grep problems into the git issues)
+[//]: # ( TODO add that each file is 1 text document which is different from the regex case. Talk about future work in expanding this)
 Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or with any pattern that the `regex_converter` module can convert to extended regex patterns (see next bullet for more details)
 - The text subdirectory can either be empty - in which case the text will be downloaded as explained in the next bullet - or hold a similar structure to the regex dir:
 ```text
@@ -245,27 +245,27 @@ _10e5
 <dont_care>_10e7
 ```
 where each file holds a textfile that all patterns from all of the files in the regex dir will be tested on.
-[//]: #( TODO explain text loading and automatic text removal)
-[//]: #( TODO rephrase this paragraph)
+[//]: # ( TODO explain text loading and automatic text removal)
+[//]: # ( TODO rephrase this paragraph)
 - a local configuration file called `_config.py` must also be present in the task dir, and it must assign a value to a `regex_type` constant. This constant is used by the `regex-converter` module in order to convert all the patterns from their own grammar to a simplified extended regular expression grammar. Currently, this module supports convertion from Gooogle `re2` format and from `protein_patterns` grammar used in the `protein` task. Adding parser's to this convertion process will add support to more regex types.
 
-[//]: #( TODO add power user section with intro to code diving and explain who is a power user)
+[//]: # ( TODO add power user section with intro to code diving and explain who is a power user)
 ## Output structure
 
-[//]: #( TODO explain what canonical form is or change the wordings)
-[//]: #( TODO explain what cannonical form is with figure)
+[//]: # ( TODO explain what canonical form is or change the wordings)
+[//]: # ( TODO explain what cannonical form is with figure)
 - The extended form regular expressions, converted from the task's patterns, are stored at `path/to/task/tmp/canonical_form_regex_files`
 - Logs from the collection stage (in format [Log Format](#log-format)) are stored at `./logs`
 - Output plots are located at `./output`, where plot types are specified in `config.OUTPUT_TYPES`
 
-[//]: #( TODO change dot to point add reference to running example)
-[//]: #( TODO reword the the term index and explain with example)
-[//]: #( TODO show example of the dot file to explain the meta data header line)
+[//]: # ( TODO change dot to point add reference to running example)
+[//]: # ( TODO reword the the term index and explain with example)
+[//]: # ( TODO show example of the dot file to explain the meta data header line)
 	For each dot in the parameter space, a consecutive matches file will be created, with its parameters listed inside. It's index in the parameter cube is part of the title.
 
-[//]: #( TODO explain what first match and all matches are somewhere as well as consectuive)
-[//]: #( TODO explain the order of the output structure)
-[//]: #( TODO add that the log is ment to querying since its CSV)
+[//]: # ( TODO explain what first match and all matches are somewhere as well as consectuive)
+[//]: # ( TODO explain the order of the output structure)
+[//]: # ( TODO add that the log is ment to querying since its CSV)
 	For each possible cut in the parameter space, a `first_match` and `all_matches` plot is created, where its parameters are specified at `detailed_output.csv`
 
 ## Log format

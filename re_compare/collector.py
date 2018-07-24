@@ -138,6 +138,8 @@ class Collector:
         :returns: TODO
 
         """
+        os.makedirs("text", exist_ok=True)
+        os.makedirs("regex", exist_ok=True)
         self.regex_files_dir = path(self.task, 'regex')
         self.text_files_dir = path(self.task, 'text')
         if not all(

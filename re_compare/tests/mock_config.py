@@ -15,7 +15,7 @@ REGEX_TYPE = "dna_patterns"
 TEXT_TYPE = "dna_sequence"
 
 ALGORITHMS = ("algorithms/python_pattern_recog",
-              "algorithms/re2_pattern_recog", "algorithms/modified_grep")
+              "algorithms/re2_pattern_recog")
 
 # Don't change order of spaces in the PARAMETER_SPACE, regex should
 # be first, text second

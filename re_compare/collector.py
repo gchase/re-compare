@@ -175,6 +175,9 @@ class Collector:
         regex_type = importlib.import_module(".".join(
             path(self.task, "_config").split("/"))).regex_type
 
+        if regex_type == "extended":
+            return
+
         protein_parser = ProteinParser()
         re2_parser = Re2Parser()
 

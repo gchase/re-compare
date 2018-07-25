@@ -1,1 +1,2 @@
 * modified_grep baseline algorithm crashes on some Linux machines (only working when run with Valgrind). On other machines it works fine, fix this issue
+* add support to convert all escape chars in extended regex into basic

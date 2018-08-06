@@ -50,7 +50,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
 Install dependincies with the following script (it'll require sudo for installing the baseline algorithms)
-[//]: # 
+[//]: #
 ```bash
 sudo bash utils/install.sh
 ```
@@ -79,23 +79,24 @@ $ ./modified_grep test test.txt
 >>>>{"match": "test", "span": [15,18], "time": 15}
 >>>>{"match": "EOF", "span":  [-1,-1], "time": 323}
 ```
-Note that the "time" field denotes the time between the last match (or program start) until current one. 
+Note that the "time" field denotes the time between the last match (or program start) until current one.
 
 Next, we need to add it as input to Re-Compare by:
 
-- moving the executable to the "algorithms" executible folder (which already stores the baseline algorithms built-in in 
+- moving the executable to the "algorithms" executible folder (which already stores the baseline algorithms built-in in
 Re-Compare plus any other baselines added by a user)
 
 ```bash
-mv ./modified_grep re-compare/re_compare/algorithms/ 
+mv ./modified_grep re-compare/re_compare/algorithms/
 ```
 - Registering the algorithm in the global config file:
-```bash
-# re-compare/re_compare/config.py
-
-ALGORITHMS = ("algorithms/python_pattern_recog", # Baseline 1
-              "algorithms/re2_pattern_recog", # Baseline 2
-	      "algorithms/modified_grep") # ADDED THIS LINE
+```
+  #re-compare/re_compare/config.py
+  ALGORITHMS = (
+                "algorithms/python_pattern_recog", # Baseline 1
+                "algorithms/re2_pattern_recog", # Baseline 2
+                "algorithms/modified_grep" # ADDED THIS LINE
+                )
 ```
 
 And finally, run the program, pointing it to our required 'protein' task:
@@ -105,12 +106,13 @@ $ ./re_compare.py --task tasks/protein
 # output is being generated!
 ```
 
-And we're done. 
+And we're done.
 
 To see the types of different output we created, see [Output example](#output-example).
 
 ## Output example
 There are two types of output, *logs* that detail all the measurements made on all algorithms on the given task during the testing stage, and *plots* that show various statistical comparisons between the new algorithm ("modified_grep" in this running example) and the baseline algorithms. The logs are located in the 'logs' directory, and the plots in the 'output' directory --- see [Directory structure](#directory-structure) to see exactly where these directories are located.
+<!--TODO what is the 3 '-' marks in the line above-->
 
 - logfile example
   ```text
@@ -133,53 +135,12 @@ Directory structure in Re-Compare is *important*, because the program assumes so
 
 ```
 re-compare/
-    re_compare/ # cd into this directory to run program/tests
-        re_compare.py # main executable
-        algorithms/ # put all algorithms here, baselines and the algorithms to test against them
-	    python_pattern_recog # Baseline 1
-	    re2_pattern_recog # Baseline 2
-	    modified_grep # the new algorithm we introduced in the "getting started" section
-	logs/ # algorithm measurements are generated and placed here
-	    metafile.csv # measurement parameters for each log file
-	    modified_grep_easy-protein-patterns_10e3.csv
-	    modified_grep_easy-protein-patterns_10e5.csv
-	    ...
-	    python_pattern_recog_easy-protein-patterns_10e3.csv
-	    python_pattern_recog_easy-protein-patterns_10e5.csv
-	    ...
-	output/ # plots generated from the logs placed in the logs directory are placed here
-	    detailed_output.csv # which measurements were used to generate each plot
-	    first_match_cut_0.png
-	    first_match_cut_1.png
-	    ...
-	    all_matches_cut_0.png
-	    all_matches_cut_2.png
-	    ...
-	    consecutive matches - (0, 0, 0).png
-	    consecutive matches - (0, 0, 1).png
-	    ...
-	    consecutive matches - (2, 1, 2).png
-	tasks/ # place tasks here, using the same directory format
-	    protein/ #task name
-	        _config.py # task configuration file that holds the task's text URLS and regex classification
-		_pre_processing.sh # mostly actions to be performed on the texts once downloaded
-		regex/ # place regex files here, files are just a list of regex, 1 regex per line
-		    _easy-protein-patterns # all files must start with "_" and match the __global__ config.py file 
-		    _hard-protein-patterns # 
-		text/ # Re-Compare downloads files from URLS stated in ./_config.py, then _pre_preccessing.sh places them here
-		    _10e3 # text files start with "_" and names should match the __global__ config.py file
-		    _10e5
-		    _10e7
-	    bro/ #task name
-	    ...
-	    dna_transcription/ #task name
-	    ...	    
-	    english_text/ #task name
-	    ...
-	    random/ #task name
-	    ...
-	    snort #task name
-	    ...
+|--- re_compare/        # cd into this directory to run program/tests
+|    |--- re_compare.py # main executable
+|    |--- algorithms/   # put all algorithms here, baselines and the algorithms to test against them
+|--- logs/              # algorithm measurements are generated and placed here
+|--- output/            # plots generated from the logs placed in the logs directory are placed here
+|--- tasks/             # place tasks here, using the same directory format
 ```
 
 ## Usage
@@ -220,7 +181,7 @@ $ ./re_compare/re_compare --log_files   <path/to/logfiles/>*
 ## Changing the parameters of the cube
 
 See documentation inside [config.py](config.py)
-
+<!--TODO broken link-->
 
 ## Translator Syntaxes
 [//]: # ( TODO rephrase this)

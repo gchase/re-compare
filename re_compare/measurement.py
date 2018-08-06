@@ -32,7 +32,7 @@ class Measurement:
             for i, pattern in enumerate(
                     islice(pat_f, config.NUMBER_OF_REGEXES_IN_TASK)):
                 pattern = pattern.rstrip()
-                logging.debug(
+                logging.info(
                     "pattern num: %d/%s, algorithm: %s, text: %s, pattern_file: %s,  pattern: %s"
                     % (i, config.NUMBER_OF_REGEXES_IN_TASK, self.alg,
                        self.text_file, pat_f.name, pattern))
@@ -147,7 +147,7 @@ class Measurement:
         try:
             yield
         except Timeout:
-            logging.debug("timeout reached for pattern")
+            logging.info("timeout reached for pattern")
 
         finally:
             signal.alarm(0)  # cancel timeout alarm

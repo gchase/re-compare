@@ -24,7 +24,7 @@ def main():
     if DEBUG:
         logging.basicConfig(
             stream=sys.stdout,
-            level=logging.DEBUG,
+            level=logging.INFO,
             format=
             '[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
             datefmt="%H:%M:%S")
@@ -42,18 +42,18 @@ def main():
     args = parser.parse_args()
 
     if args.log_files:
-        logging.debug('starting analysis')
+        logging.info('starting analysis')
 
         Analysis(files=args.log_files).analyze_logs()
 
-        logging.debug('finished analysis')
+        logging.info('finished analysis')
     else:
-        logging.debug('starting collection')
+        logging.info('starting collection')
 
         Collector(args.task).collect()
 
-        logging.debug('finished collection')
-        logging.debug('starting analysis')
+        logging.info('finished collection')
+        logging.info('starting analysis')
 
         Analysis(logs_dir=DEFAULT_LOG_FILE_DIR).analyze_logs()
 

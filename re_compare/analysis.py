@@ -276,8 +276,8 @@ class Analysis:
             matches = []
             for i in itertools.count(1):
                 if i % 100 == 0:
-                    logging.debug("analyzed %s matches for dot %s" %
-                                  (i, str(cur_coords)))
+                    logging.info("analyzed %s matches for dot %s" %
+                                 (i, str(cur_coords)))
                 stats = Analysis.get_stats_of_nth_match(
                     cell['results'], i, 'consecutive')
                 if not stats:

@@ -67,7 +67,7 @@ class Collector:
         ftp.cwd(parsed_url.path[:-len(text_file_name)])
         total = ftp.size(text_file_name)
 
-        logging.debug("downloading textfile via ftp")
+        logging.info("downloading textfile via ftp")
 
         new_file_path = path(self.text_files_dir, text_file_name)
         with open(new_file_path, 'wb') as f:
@@ -94,13 +94,13 @@ class Collector:
         ]
 
     def collect(self):
-        logging.debug('collecting tasks')
+        logging.info('collecting tasks')
         self._get_task()
 
-        logging.debug('converting regex to canonical form')
+        logging.info('converting regex to canonical form')
         self._convert_regex_to_canonical_form()
 
-        logging.debug('running algs on regexes and data')
+        logging.info('running algs on regexes and data')
         self._perform_measurements()
 
     def _perform_measurements(self):
@@ -163,7 +163,7 @@ class Collector:
 
     def _preprocess_text(self):
         if isfile(path(self.task, "_pre_processing.sh")):
-            logging.debug("preprocessing text")
+            logging.info("preprocessing text")
 
             subprocess.call(
                 [path(self.task, "_pre_processing.sh"), self.text_files_dir])

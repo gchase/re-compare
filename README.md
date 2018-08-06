@@ -4,7 +4,7 @@
 Re-Compare
 =====
 
-A modular configurable platform for comparing pattern matching algorithms with state-of-the-art baseline algorithms.
+A modular configurable platform for comparing regex matching algorithms with state-of-the-art baseline algorithms.
 
 ## Features
 
@@ -50,7 +50,6 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
 Install dependincies with the following script (it'll require sudo for installing the baseline algorithms)
-[//]: #
 ```bash
 sudo bash utils/install.sh
 ```
@@ -60,8 +59,7 @@ Change directory into the main module, where the main execution file `re_compare
 cd re_compare
 ```
 
-[//]: # ( TODO explain that run test is for system verification and for tutorials)
-To run tests:
+In order to check that the installation went smoothly, you can run:
 ```bash
 pytest tests
 ```
@@ -70,6 +68,7 @@ pytest tests
 Suppose we'd like to compare some pattern matching algorithm to other known baselines.
 
 For convenience and familiarity, our running example for this README will use Grep as this "new" pattern matching algorithm we'd like to test, and the built-in "Protien" task.
+A task is a set of calculations of the type "match regex_x to text_y" (to learn more about how to configure and add your own tasks to re-compare, see [Adding datasets](#adding-algorithms))
 
 Our first step will be to modify Grep's output so that it adhers to Re-Compare's format, and rename Grep to "modified_grep" in order to avoid confusion):
 ```bash
@@ -99,7 +98,7 @@ mv ./modified_grep re-compare/re_compare/algorithms/
                 )
 ```
 
-And finally, run the program, pointing it to our required 'protein' task:
+And finally, run the algorithm on the protein task:
 ```bash
 $ cd re-compare/re_compare
 $ ./re_compare.py --task tasks/protein
@@ -111,8 +110,7 @@ And we're done.
 To see the types of different output we created, see [Output example](#output-example).
 
 ## Output example
-There are two types of output, *logs* that detail all the measurements made on all algorithms on the given task during the testing stage, and *plots* that show various statistical comparisons between the new algorithm ("modified_grep" in this running example) and the baseline algorithms. The logs are located in the 'logs' directory, and the plots in the 'output' directory --- see [Directory structure](#directory-structure) to see exactly where these directories are located.
-<!--TODO what is the 3 '-' marks in the line above-->
+There are two types of output, *logs* that detail all the measurements made on all algorithms on the given task during the testing stage, and *plots* that show various statistical comparisons between the new algorithm ("modified_grep" in this running example) and the baseline algorithms. The logs are located in the 'logs' directory, and the plots in the 'output' directory — see [Directory structure](#directory-structure) to see exactly where these directories are located.
 
 - logfile example
   ```text
@@ -124,7 +122,14 @@ There are two types of output, *logs* that detail all the measurements made on a
 
   ```
 
+Where match time is one of {first_match,consecutive,all_matches} and they signal the following time calculations.
+-   first_match - time until first match was recieved. match number is always 1
+-   consecutive - ith delay time. The time between the i-1 to the ith match, match number is i.
+-   all_matches - total elapse time of the algorithm, match number is the number of matches across the entire file.
+
 - Example plots
+
+The y axis is in ms and the x axis is in [user defined](#changing-the-parameters-of-the-cube) categories.
 
   ![consecutive graph](doc/consecutive%20matches%20-%20(2%2C%201%2C%202).png)
 
@@ -157,6 +162,7 @@ For usage see [Regex translation](#regex-translation)
 The **Collector** takes datasets in a a user friendly format (see [Adding datasets](#Adding-datasets))and Regex matching algorithms executables (see [Adding Algorithms](#Adding-Algorithms)). It translates the regexes to a syntax that each Alg supports, using **Regex translator**, runs the regexs tasks on each Alg and records the timing of each algorithm.
 
 The **Cube-Analyzer** takes the logs of the **Collecter**, and outputs graphs and logs of statistical comparisons of the algorithm across every parameter in the user defined [Parameter Space](link to math viggentes).
+[//]: # (fix link )
 
 
 -  To perform measurements and analysis, run
@@ -165,7 +171,8 @@ The **Cube-Analyzer** takes the logs of the **Collecter**, and outputs graphs an
 $ ./re_compare/re_compare --task <path_to_task>
 ```
 
-[//]: # ( TODO explain what a task is brifly and link to the default taks and the task structure section)
+<!--TODO fix link to config -->
+
 Note that the configuration specified `config.py` must match the task (see documentation in [config](config.py))
 
 [Default](#Default-datasets) tasks, can be found in the tasks directory
@@ -173,8 +180,8 @@ Note that the configuration specified `config.py` must match the task (see docum
 $ ./re_compare/re_compare --task re_compare/tasks/<dir_name>
 ```
 
-[//]: # ( TODO explain what the usage cases for cube pnly analysis are)
-- To perform only the cube-analysis, given log-files of correct format (See [Log format](#log-format))
+- Assuming you want to add your own external log files, or to alter re-compare log files prior to plot generation, you can change the logs manually and perform only the cube-analysis (See [Log format](#log-format)).
+
 ```
 $ ./re_compare/re_compare --log_files   <path/to/logfiles/>*
 ```
@@ -184,11 +191,10 @@ See documentation inside [config.py](config.py)
 <!--TODO broken link-->
 
 ## Translator Syntaxes
-[//]: # ( TODO rephrase this)
-[//]: # ( TODO say python syntax and not re2 syntax, fix broken link to an explanation of python extended syntax)
-[//]: # ( TODO explain that extended is both a supported syntax and the intermidiate represenataion and add the flowchart with the many-to-one-to-many explanation)
-The translator supports converting all supported syntaxes to python [re2](ocs.python.org/3/library/re.html) syntax.
-It also allows converting an re2 pattern to the basic syntax.
+Our in house regex tranlator is an all to one to all translator, and supports translation from all of our supported regex syntax formats to an intermidiate language that extends all of the supported syntaxes and from the intermidiate language back to the basic syntax, defined bellow.
+
+Our intermidiate language, is python's [extended regex format](https://docs.python.org/2/library/re.html).
+
 
 **Basic syntax:**
 The basic regex syntax supports the following operations:
@@ -196,18 +202,21 @@ The basic regex syntax supports the following operations:
 also supports escaped characters in both `\\n` or `\\t` format or `\\x00` format with two hex digits.
 `|` - Or operator
 `()` - Group operator, useful for defining precedence, etc...
-`*` - Star operator. Concatenate the pattern to itself 0 or more times.
+`*` - Star operator. Concatenate the regex to itself 0 or more times.
+
+**Python's extended syntax**
+Also used as our intermidiate language as it is the most expressive. Full description can be found [here](https://docs.python.org/2/library/re.html)
 
 **Proteins:**
 Full description of the proteins regex syntax can be found [here](http://www.hpa-bioinfotools.org.uk/ps_scan/PS_SCAN_PATTERN_SYNTAX.html).
 
 ## Adding algorithms
 [//]: # ( TODO change the word pattern to regex globally)
-All pattern matching algorithms tested in this library have the following signature:
+All regex matching algorithms tested in this library have the following signature:
 [//]: # ( TODO correct this to be an executible and explain in more detail what we require)
 [//]: # ( TODO explain that each alg will run on all regexes and text pairs in the given task)
 ```python
-algorithm(pattern_string, path/to/textfile)
+algorithm(regex_string, path/to/textfile)
 ```
 The only output that is captured is output that start with the the prefix `>>>>`, other output is ignored.
 The output format is a json string, with keys `match,span,time` that correspond with each nth match's string-match, its span in the text, and the __delta__ from the previous match. When the algorithm reaches EOF, it must output a last match, with the match "EOF", span `[-1,-1]` and the delta time from the previous match (or begining of run, if there were not matches). For example:
@@ -230,6 +239,7 @@ $ ./modified_grep "mooooooooo" example.txt
 ## Adding datasets
 The task structure is dependant on the **ordered** values in `config.PARAMETER_SPACE`. This dependency is what the section explains.
 For clarity, we assume the parameter space looks like this:
+[//]: # ( explain that this is done for each task)
 [//]: # ( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)
 ```python
 PARAMETER_SPACE = OrderedDict({
@@ -254,7 +264,6 @@ _hard_shallow
 _hard_deep
 ```
 [//]: # ( TODO rephrase this paragraph)
-[//]: # ( TODO add the grep problems into the git issues)
 [//]: # ( TODO add that each file is 1 text document which is different from the regex case. Talk about future work in expanding this)
 Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or with any pattern that the `regex_converter` module can convert to extended regex patterns (see next bullet for more details)
 - The text subdirectory can either be empty - in which case the text will be downloaded as explained in the next bullet - or hold a similar structure to the regex dir:
@@ -273,6 +282,8 @@ where each file holds a textfile that all patterns from all of the files in the 
 
 [//]: # ( TODO explain what canonical form is or change the wordings)
 [//]: # ( TODO explain what cannonical form is with figure)
+<!--TODO GILAD change the worddings to 'converted_regex_files'-->
+
 - The extended form regular expressions, converted from the task's patterns, are stored at `path/to/task/tmp/canonical_form_regex_files`
 - Logs from the collection stage (in format [Log Format](#log-format)) are stored at `./logs`
 - Output plots are located at `./output`, where plot types are specified in `config.OUTPUT_TYPES`
@@ -280,19 +291,20 @@ where each file holds a textfile that all patterns from all of the files in the 
 [//]: # ( TODO change dot to point add reference to running example)
 [//]: # ( TODO reword the the term index and explain with example)
 [//]: # ( TODO show example of the dot file to explain the meta data header line)
-	For each dot in the parameter space, a consecutive matches file will be created, with its parameters listed inside. It's index in the parameter cube is part of the title.
+	For each point in the parameter space, a consecutive matches file will be created, with its parameters listed inside. It's index in the parameter cube is part of the title.
 
-[//]: # ( TODO explain what first match and all matches are somewhere as well as consectuive)
-[//]: # ( TODO explain the order of the output structure)
-[//]: # ( TODO add that the log is ment to querying since its CSV)
 	For each possible cut in the parameter space, a `first_match` and `all_matches` plot is created, where its parameters are specified at `detailed_output.csv`
 
 ## Log format
-- For each selection of algorithm from `config.ALGORITHMS` and parameters from all lists specified in `config.PARAMETER_SPACE`, a log file __must__ be supplied with the format:
+  This section explains the output format of the collection module, which is also the input of the cube analyzer.
+
+  - For each selection of algorithm from `config.ALGORITHMS` and parameters from all lists specified in `config.PARAMETER_SPACE`, a log file __must__ be supplied with the following csv format:
 	```csv
 	regex,matchtype,matchnumber,time(ms),span
 	```
-	where `regex` is an __extended form regular expression__, matchtype is one of `consecutive, first_match, all_matches`, and span is in format `[n,n + <size_of_match>]`
+        where `regex` is an __extended form regular expression__, matchtype is one of `consecutive, first_match, all_matches`, and span is in format `[n,n + <size_of_match>]`. This csv format is ment to ease querying the log files.
+
+    The log file must be ordered such that matches of any one regex form a continuous block with the first_match line first, the all_match line last and the consecutive lines in chronological order.
 
 - A file called `metafile.csv` must also be supplied, where the parameters of each logfile in the previous bullet is specified in the following format:
 	```csv
@@ -325,12 +337,16 @@ where each file holds a textfile that all patterns from all of the files in the 
 
 ## Regex translation
 Currently, we have 3 different parsers for the 3 supported syntaxes: `BasicAstParser`, `Re2Parser` and `ProteinParser`.
-Description of the syntaxes can be found in the [Translator syntaxes]((#Translator-syntaxes]) section.
+Description of the syntaxes can be found in the [Translator syntaxes](#translator-syntaxes) section.
 
 The regex parsers are using the python [ply library](http://www.dabeaz.com/ply/).
 ply is a python lex/yacc library which allows building [lalr1](https://en.wikipedia.org/wiki/LALR_parser) grammars.
 
+The parsing is doen automatically during the collection step.
+
 **usage:**
+The following are the manual instructions for the parsers (useful if you want to preprocess your own datasets).
+
 In the project's root directory run the following commands:
 ```
 python
@@ -343,7 +359,7 @@ print(basic_syntax_pattern)
 ```
 
 First, we import the re2 parser. Then we create an instance of an re2 parser.
-The parse method gets a pattern and return a tuple containing the build AST, groups and named groups (named groups are not yet supported, but referring groups by index works)
+The parse method gets a pattern and return a tuple containing the build AST, groups and named groups (named groups are not yet supported, but referring groups by their index in the list of groups works)
 Here, it's possible to print the tree with the `to_re2_string()` method.
 To convert the tree use the `convert_re2_tree_to_basic_syntax` method with the same tuple elements that parse returned.
 This method returns an AST in the basic syntax, which supports the `to_basic_string()` method in order to print it.
@@ -376,7 +392,7 @@ An error handler can be defined like this:
 
 After you got your lexer working you need to define the grammar rules.
 ply allows generic LALR grammars which should be ok for most reasonable syntaxes
-Some grammars may have conflicts regarding which rule should be used in the case where multiple rules can derive the samee expression.
+Some grammars may have conflicts regarding which rule should be used in the case where multiple rules can derive the same expression.
 For example we want a calculator to use multiplication before addition in an expression like '1+2*3'
 In order to solve these conflicts use the 'precedence' table
 
@@ -396,6 +412,8 @@ Rules are defined like the following example:
     def p_star(self, p):
         """expression : expression STAR"""
         p[0] = Re2StarNode(p[1])
+[//]: # ( TODO explain the Re2starnode generates the syntax tree)
+
 
 The docstring is mandatory and tells ply exactly which expressions to match for this rule.
 In our case we match any expression followed by a STAR token ('\*') in re2 syntax.
@@ -453,8 +471,11 @@ The resulting expression is given in a recursive list formula as shown above. Al
 flatten_expression_tree can be called to flatten the regex into string format.
 
 ## Default datasets
+All datasets are available at '/re_compare/tasks/'
+
 
 Currently we provide the following default datasets
+
 * **Protein motifs**
 Regexes are protein motifs taken from the [prosite](https://prosite.expasy.org) protein database. The regexes where extracted by a crawler and translated to extended regex format via our in house syntax [Translator](#Translator-syntaxes)
 The text for this dataset is a file containing all protein sequences in the [PDB](https://www.rcsb.org/) protein database.
@@ -494,5 +515,5 @@ To contribute to the devlopment of re-compare, please contact Dean Light at ligh
 
 ## License
 	re-compare is released under the [MIT License](http://www.opensource.org/licenses/MIT).
-  Liscence dependancies include:
-  *TODO put dependancies here
+  Project dependancies include:
+  <!--TODO put dependancies here-->

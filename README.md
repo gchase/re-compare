@@ -19,6 +19,7 @@ A modular configurable platform for comparing pattern matching algorithms with s
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Output example](#output-example)
+- [Directory structure](#directory-structure)
 - [Usage](#usage)
 - [Translator syntaxes](#translator-syntaxes)
 - [Changing-the-parameters-of-the-cube](#changing-the-parameters-of-the-cube)
@@ -36,7 +37,6 @@ A modular configurable platform for comparing pattern matching algorithms with s
 
 
 ## Installation
-**TEMPORARY**
 
 Install python 3.6.5 (and pip3), then clone the repo and cd into it:
 ```bash
@@ -67,57 +67,50 @@ pytest tests
 ```
 
 ## Getting Started
-re-compare is constructed of 3 major modules
-* Regex translator
-* Collector
-* Cube-Analyzer
+Suppose we'd like to compare some pattern matching algorithm to other known baselines.
 
-The **Regex translator** builds an [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for a regex pattern and allows converting multiple regex syntaxes to a common basic syntax (See [Translator syntaxes](#Translator-syntaxes))
-For usage see [Regex translation](#regex-translation)
+For convenience and familiarity, our running example for this README will use Grep as this "new" pattern matching algorithm we'd like to test, and the built-in "Protien" task.
 
-
-The **Collector** takes datasets in a a user friendly format (see [Adding datasets](#Adding-datasets))and Regex matching algorithms executables (see [Adding Algorithms](#Adding-Algorithms)). It translates the regexes to a syntax that each Alg supports, using **Regex translator**, runs the regexs tasks on each Alg and records the timing of each algorithm.
-
-The **Cube-Analyzer** takes the logs of the **Collecter**, and outputs graphs and logs of statistical comparisons of the algorithm across every parameter in the user defined [Parameter Space](link to math viggentes).
-
-Lets try to add our Alg , *Regexinator*, to re-compare and run it on the preset *Protein-dataset*
-  From the recompare main directory
+Our first step will be to modify Grep's output so that it adhers to Re-Compare's format, and rename Grep to "modified_grep" in order to avoid confusion):
 ```bash
-  # adding alg executable to alg directory
-  mv ~/my_dir/Regexinator.o algorithms/
+$ echo "test \n bloop \n test" > test.txt
+$ ./modified_grep test test.txt
+>>>>{"match": "test", "span": [0,3], "time": 726}
+>>>>{"match": "test", "span": [15,18], "time": 15}
+>>>>{"match": "EOF", "span":  [-1,-1], "time": 323}
 ```
-[//]: # ( TODO make a running example and make sure it is consistent with all graphs and future examples)
-Add this algorithm to the ALGORITHMS array at the re_comapre global config file:
-```python
-  # re_compare/config.py
+Note that the "time" field denotes the time between the last match (or program start) until current one. 
 
-  ALGORITHMS = [
-  	"re_compare/algorithms/baseline_alg_1",
-	"re_compare/algorithms/baseline_alg_2",
-	"re_compare/algorithms/Regexinator.o" # ADDED
-	]
-```
+Next, we need to add it as input to Re-Compare by:
 
-Now we run our algorithm
+- moving the executable to the "algorithms" executible folder (which already stores the baseline algorithms built-in in 
+Re-Compare plus any other baselines added by a user)
+
 ```bash
-  $ ./re_compare --task tasks/proteinDS
+mv ./modified_grep re-compare/re_compare/algorithms/ 
+```
+- Registering the algorithm in the global config file:
+```bash
+# re-compare/re_compare/config.py
+
+ALGORITHMS = ("algorithms/python_pattern_recog", # Baseline 1
+              "algorithms/re2_pattern_recog", # Baseline 2
+	      "algorithms/modified_grep") # ADDED THIS LINE
 ```
 
-  ![runtime](doc/runtime_img.png)
+And finally, run the program, pointing it to our required 'protein' task:
+```bash
+$ cd re-compare/re_compare
+$ ./re_compare.py --task tasks/protein
+# output is being generated!
+```
 
-  ![runtime_2](doc/runtime_patterns_img.png)
+And we're done. 
 
-[//]: # ( TODO explain with snap shot where the log and output format are, consider changing the name of logs since it is not debugging info but actual outputs)
-After the process finishes, the logs directory is populated with measurements logs, created by the **Collector** module:
-
-  ![logs_img](doc/logs_population.png)
-
-and the output directory is populated with graphs, created by the **Analysis** module:
-
-  ![output_img](doc/output_img.png)
-
+To see the types of different output we created, see [Output example](#output-example).
 
 ## Output example
+There are two types of output, *logs* that detail all the measurements made on all algorithms on the given task during the testing stage, and *plots* that show various statistical comparisons between the new algorithm ("modified_grep" in this running example) and the baseline algorithms. The logs are located in the 'logs' directory, and the plots in the 'output' directory --- see [Directory structure](#directory-structure) to see exactly where these directories are located.
 
 - logfile example
   ```text
@@ -135,9 +128,74 @@ and the output directory is populated with graphs, created by the **Analysis** m
 
   ![non consecutive graph](output/all_matches_cut_4.png)
 
+## Directory structure
+Directory structure in Re-Compare is *important*, because the program assumes some files are located in particular locations. All files/directories not mentioned in this section are not important for the user.
+
+```
+re-compare/
+    re_compare/ # cd into this directory to run program/tests
+        re_compare.py # main executable
+        algorithms/ # put all algorithms here, baselines and the algorithms to test against them
+	    python_pattern_recog # Baseline 1
+	    re2_pattern_recog # Baseline 2
+	    modified_grep # the new algorithm we introduced in the "getting started" section
+	logs/ # algorithm measurements are generated and placed here
+	    metafile.csv # measurement parameters for each log file
+	    modified_grep_easy-protein-patterns_10e3.csv
+	    modified_grep_easy-protein-patterns_10e5.csv
+	    ...
+	    python_pattern_recog_easy-protein-patterns_10e3.csv
+	    python_pattern_recog_easy-protein-patterns_10e5.csv
+	    ...
+	output/ # plots generated from the logs placed in the logs directory are placed here
+	    detailed_output.csv # which measurements were used to generate each plot
+	    first_match_cut_0.png
+	    first_match_cut_1.png
+	    ...
+	    all_matches_cut_0.png
+	    all_matches_cut_2.png
+	    ...
+	    consecutive matches - (0, 0, 0).png
+	    consecutive matches - (0, 0, 1).png
+	    ...
+	    consecutive matches - (2, 1, 2).png
+	tasks/ # place tasks here, using the same directory format
+	    protein/ #task name
+	        _config.py # task configuration file that holds the task's text URLS and regex classification
+		_pre_processing.sh # mostly actions to be performed on the texts once downloaded
+		regex/ # place regex files here, files are just a list of regex, 1 regex per line
+		    _easy-protein-patterns # all files must start with "_" and match the __global__ config.py file 
+		    _hard-protein-patterns # 
+		text/ # Re-Compare downloads files from URLS stated in ./_config.py, then _pre_preccessing.sh places them here
+		    _10e3 # text files start with "_" and names should match the __global__ config.py file
+		    _10e5
+		    _10e7
+	    bro/ #task name
+	    ...
+	    dna_transcription/ #task name
+	    ...	    
+	    english_text/ #task name
+	    ...
+	    random/ #task name
+	    ...
+	    snort #task name
+	    ...
+```
 
 ## Usage
 
+re-compare is comprised of 3 major modules
+* Regex translator
+* Collector
+* Cube-Analyzer
+
+The **Regex translator** builds an [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) for a regex pattern and allows converting multiple regex syntaxes to a common basic syntax (See [Translator syntaxes](#Translator-syntaxes))
+For usage see [Regex translation](#regex-translation)
+
+
+The **Collector** takes datasets in a a user friendly format (see [Adding datasets](#Adding-datasets))and Regex matching algorithms executables (see [Adding Algorithms](#Adding-Algorithms)). It translates the regexes to a syntax that each Alg supports, using **Regex translator**, runs the regexs tasks on each Alg and records the timing of each algorithm.
+
+The **Cube-Analyzer** takes the logs of the **Collecter**, and outputs graphs and logs of statistical comparisons of the algorithm across every parameter in the user defined [Parameter Space](link to math viggentes).
 
 
 -  To perform measurements and analysis, run

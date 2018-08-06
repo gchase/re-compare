@@ -282,9 +282,8 @@ where each file holds a textfile that all patterns from all of the files in the 
 
 [//]: # ( TODO explain what canonical form is or change the wordings)
 [//]: # ( TODO explain what cannonical form is with figure)
-<!--TODO GILAD change the worddings to 'converted_regex_files'-->
 
-- The extended form regular expressions, converted from the task's patterns, are stored at `path/to/task/tmp/canonical_form_regex_files`
+- The extended form regular expressions, converted from the task's patterns, are stored at `path/to/task/tmp/converted_regex_files`
 - Logs from the collection stage (in format [Log Format](#log-format)) are stored at `./logs`
 - Output plots are located at `./output`, where plot types are specified in `config.OUTPUT_TYPES`
 

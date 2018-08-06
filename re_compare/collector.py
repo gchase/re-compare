@@ -169,8 +169,8 @@ class Collector:
                 [path(self.task, "_pre_processing.sh"), self.text_files_dir])
 
     def _convert_regex_to_canonical_form(self):
-        canonical_regex_directory_path = os.path.join(
-            self.task, 'tmp', "canonical_form_regex_files")
+        canonical_regex_directory_path = os.path.join(self.task, 'tmp',
+                                                      "converted_regex_files")
 
         regex_type = importlib.import_module(".".join(
             path(self.task, "_config").split("/"))).regex_type

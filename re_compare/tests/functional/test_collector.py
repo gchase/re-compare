@@ -31,7 +31,7 @@ def test_downloads_texts(collector, mocker):
 
 
 def test_converts_regexes(collector, mocker, tmpdir, monkeypatch):
-    canonical_regex_path = DUMMY_TASK_PATH + "/tmp/canonical_form_regex_files"
+    canonical_regex_path = DUMMY_TASK_PATH + "/tmp/converted_regex_files"
     shutil.rmtree(canonical_regex_path, ignore_errors=True)
     parser = Re2Parser()
     tree, groups, named_groups = parser.parse(

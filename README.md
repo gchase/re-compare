@@ -65,12 +65,12 @@ pytest tests
 ```
 
 ## Getting Started
-Suppose we'd like to compare some pattern matching algorithm to other known baselines.
+Suppose we'd like to compare some regex pattern matching algorithm to other known baselines.
 
-For convenience and familiarity, our running example for this README will use Grep as this "new" pattern matching algorithm we'd like to test, and the built-in "Protien" task.
-A task is a set of calculations of the type "match regex_x to text_y" (to learn more about how to configure and add your own tasks to re-compare, see [Adding datasets](#adding-algorithms))
+For convenience and familiarity, our running example for this README will use Grep as this "new" regex matching algorithm we'd like to test, and the built-in "Protien" task.
+A task is a set of calculations of the type "match regex_x to text_y" (to learn more about how to configure and add your own tasks to re-compare, see [Adding datasets](#adding-datasets))
 
-Our first step will be to modify Grep's output so that it adhers to Re-Compare's format, and rename Grep to "modified_grep" in order to avoid confusion):
+Our first step will be to modify Grep's output so that it adhers to Re-Compare's format, and rename Grep to "modified_grep" (in order to avoid confusion):
 ```bash
 $ echo "test \n bloop \n test" > test.txt
 $ ./modified_grep test test.txt
@@ -171,11 +171,9 @@ The **Cube-Analyzer** takes the logs of the **Collecter**, and outputs graphs an
 $ ./re_compare/re_compare --task <path_to_task>
 ```
 
-<!--TODO fix link to config -->
+Note that the task folder must match re-compares task structure format (see [Adding datasets](#Adding-datasets))
 
-Note that the configuration specified `config.py` must match the task (see documentation in [config](config.py))
-
-[Default](#Default-datasets) tasks, can be found in the tasks directory
+Our built in [Default](#Default-datasets) tasks, can be found in the tasks directory
 ```
 $ ./re_compare/re_compare --task re_compare/tasks/<dir_name>
 ```
@@ -183,18 +181,22 @@ $ ./re_compare/re_compare --task re_compare/tasks/<dir_name>
 - Assuming you want to add your own external log files, or to alter re-compare log files prior to plot generation, you can change the logs manually and perform only the cube-analysis (See [Log format](#log-format)).
 
 ```
-$ ./re_compare/re_compare --log_files   <path/to/logfiles/>*
+$ ./re_compare/re_compare --log_files   <path/to/logfiles/>
 ```
+
+This is it for the intro to re-compare. The next sections are for power users that want to costumize or get the most out of re-compare.
+
+Power users (beware, code ahead)
+===============
+
 ## Changing the parameters of the cube
 
-See documentation inside [config.py](config.py)
-<!--TODO broken link-->
+See documentation inside [config.py](re_compare/config.py)
 
 ## Translator Syntaxes
-Our in house regex tranlator is an all to one to all translator, and supports translation from all of our supported regex syntax formats to an intermidiate language that extends all of the supported syntaxes and from the intermidiate language back to the basic syntax, defined bellow.
+Our in house regex tranlator uses python's [extended regex format](https://docs.python.org/2/library/re.html) as an intermidiate representation of all other syntaxes (and is itself supported as a regex syntax in re-compare).
 
-Our intermidiate language, is python's [extended regex format](https://docs.python.org/2/library/re.html).
-
+These are the syntaxes currently supported in re-compare
 
 **Basic syntax:**
 The basic regex syntax supports the following operations:
@@ -202,7 +204,8 @@ The basic regex syntax supports the following operations:
 also supports escaped characters in both `\\n` or `\\t` format or `\\x00` format with two hex digits.
 `|` - Or operator
 `()` - Group operator, useful for defining precedence, etc...
-`*` - Star operator. Concatenate the regex to itself 0 or more times.
+`*` - Star operator. matches a concatenation of the regex 0 or more times.
+`?` - optional operator. matches either the regex or the empty string.
 
 **Python's extended syntax**
 Also used as our intermidiate language as it is the most expressive. Full description can be found [here](https://docs.python.org/2/library/re.html)
@@ -211,15 +214,14 @@ Also used as our intermidiate language as it is the most expressive. Full descri
 Full description of the proteins regex syntax can be found [here](http://www.hpa-bioinfotools.org.uk/ps_scan/PS_SCAN_PATTERN_SYNTAX.html).
 
 ## Adding algorithms
-[//]: # ( TODO change the word pattern to regex globally)
+<!--[//]: # ( TODO change the word pattern to regex globally)-->
 All regex matching algorithms tested in this library have the following signature:
-[//]: # ( TODO correct this to be an executible and explain in more detail what we require)
-[//]: # ( TODO explain that each alg will run on all regexes and text pairs in the given task)
-```python
-algorithm(regex_string, path/to/textfile)
+<!--[//]: # ( TODO explain that each alg will run on all regexes and text pairs in the given task)-->
+```bash
+ algorithm_executable regex_string path/to/textfile
 ```
-The only output that is captured is output that start with the the prefix `>>>>`, other output is ignored.
-The output format is a json string, with keys `match,span,time` that correspond with each nth match's string-match, its span in the text, and the __delta__ from the previous match. When the algorithm reaches EOF, it must output a last match, with the match "EOF", span `[-1,-1]` and the delta time from the previous match (or begining of run, if there were not matches). For example:
+The collector ignores all lines that are not prefixed by `>>>>`.
+The output format for returning spans is a [json string](https://www.w3schools.com/js/js_json_syntax.asp), with keys `match,span,time` that correspond with each match's string-match, its span in the text, and the __delta__ from the previous match. When the algorithm reaches EOF, it must output a last match, with the match "EOF", span `[-1,-1]` and the delta time from the previous match (or begining of run, if there were not matches). For example:
 ```
 # in file example.txt
 abc is easy as 123
@@ -237,11 +239,27 @@ $ ./modified_grep "mooooooooo" example.txt
 ```
 
 ## Adding datasets
-The task structure is dependant on the **ordered** values in `config.PARAMETER_SPACE`. This dependency is what the section explains.
-For clarity, we assume the parameter space looks like this:
-[//]: # ( explain that this is done for each task)
-[//]: # ( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)
+A task dataset is a directory with the following structure:
+
+```
+task_name/
+|--- text/                        # subdir for all text files
+|    |--- textfile_10e3           # examples of textfiles
+|    |--- textfile_10e3           #
+|--- regex/                       # subdirs for all regex patterns
+|    |--- regexfile_easy-patterns # example of a file of regex patterns
+|    |--- regexfile_hard-patterns #
+|--- _config.py                   # the task confdig file. not to be confused with the global re-compare config file.
+|--- _pre_processing.sh           # a pre processing script. usefull for dynamically loading and pre processing big data files.
+```
+The regex and text file names are dependant on the **ordered** values in `_config.PARAMETER_SPACE`. This dependency is what the section explains.
+
+### Param space configuration
+
+Here is an example of a definition of a **parameter space**:
+<!--[//]: # ( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)-->
 ```python
+# task_name/_config.py
 PARAMETER_SPACE = OrderedDict({
 	'regex_space': [
 		('hardness',["easy", "hard"]),
@@ -252,32 +270,57 @@ PARAMETER_SPACE = OrderedDict({
 	]
 })
 ```
-[//]: # ( TODO explain what both subdirectories are, make an ls example and link to default database folder and explain that they are in the same format)
-[//]: # ( TODO explain whose name correspond to what maybe view of the configfiles)
-[//]: # ( TODO make sure each config file is given a different name)
+Note that these parameters are completly user configureable. Here is a more general parameter space configuration:
+```python
+# task_name/_config.py
+PARAMETER_SPACE = OrderedDict({
+	'regex_space': [
+		('r_param1',["val_a", "val_b"]),
+		('r_param2',["val_c","val_d"])
+		('r_param3',["val_e","val_f","val_g"])
+	],
+	'text_space': [
+		('t_param1',["val_z", "val_y"]),
+		('t_param2',["val_x","val_w"])
+		('t_param3_new_and_imporved',["val_e","val_f"])
+	]
+})
+```
+The beauty of re-compare is that it can run on whatever parameterisation of the param space the user wants.
+
+
+
+<!--[//]: # ( TODO explain whose name correspond to what maybe view of the configfiles)-->
+<!--[//]: # ( TODO make sure each config file is given a different name)-->
 Both subdirectories have files with names that correspond to a selection of values from their space. Each such file start with either a `_` char, or `<some_prefix>_` as displayed below
 - The regex subdirectory has files whose names correspond with the `regex_space` in the `PARAMETER_SPACE`. So for the example above, the `regex` subdirectory will hold files with names
-```text
+```bash
+$ ls task_name/regex
 _easy_shallow
 <some_prefix>_easy_deep
 _hard_shallow
 _hard_deep
 ```
-[//]: # ( TODO rephrase this paragraph)
-[//]: # ( TODO add that each file is 1 text document which is different from the regex case. Talk about future work in expanding this)
-Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or with any pattern that the `regex_converter` module can convert to extended regex patterns (see next bullet for more details)
-- The text subdirectory can either be empty - in which case the text will be downloaded as explained in the next bullet - or hold a similar structure to the regex dir:
-```text
+Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or with any pattern that the `regex_converter` module can convert to extended regex patterns
+- The text subdirectory has a similar structure to the regex dir. However, the text subdirectory can either be empty, in which case the text files will be downloaded from a url specified in the local config file and proccessed using the `_pre_processing.sh` script. In our example the text sub dir might look like this:
+```bash
+$ ls task_name/text
 _10e3
 _10e5
 <dont_care>_10e7
 ```
-where each file holds a textfile that all patterns from all of the files in the regex dir will be tested on.
-[//]: # ( TODO explain text loading and automatic text removal)
-[//]: # ( TODO rephrase this paragraph)
-- a local configuration file called `_config.py` must also be present in the task dir, and it must assign a value to a `regex_type` constant. This constant is used by the `regex-converter` module in order to convert all the patterns from their own grammar to a simplified extended regular expression grammar. Currently, this module supports convertion from Gooogle `re2` format and from `protein_patterns` grammar used in the `protein` task. Adding parser's to this convertion process will add support to more regex types.
+Each file holds a textfile that all patterns from all of the files in the regex dir will be tested on.
+- The task specific `_config.py` file must assign a value to a `regex_type` constant. This constant is used by the `regex-converter` module in order to convert all the patterns from their own grammar to a simplified regular expression grammar. Adding parsers to this convertion process will add support to more regex types.
+Here is an example of the `_config.py` :
 
-[//]: # ( TODO add power user section with intro to code diving and explain who is a power user)
+```python
+#task_name/_config.py
+TEXT_URLS = "https://www.my_sweet_texts.com/text1.txt"
+regex_type = "protein_patterns"
+
+```
+
+
 ## Output structure
 
 [//]: # ( TODO explain what canonical form is or change the wordings)

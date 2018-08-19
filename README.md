@@ -214,14 +214,12 @@ Also used as our intermidiate language as it is the most expressive. Full descri
 Full description of the proteins regex syntax can be found [here](http://www.hpa-bioinfotools.org.uk/ps_scan/PS_SCAN_PATTERN_SYNTAX.html).
 
 ## Adding algorithms
-<!--[//]: # ( TODO change the word pattern to regex globally)-->
 All regex matching algorithms tested in this library have the following signature:
-<!--[//]: # ( TODO explain that each alg will run on all regexes and text pairs in the given task)-->
 ```bash
  algorithm_executable regex_string path/to/textfile
 ```
 The collector ignores all lines that are not prefixed by `>>>>`.
-The output format for returning spans is a [json string](https://www.w3schools.com/js/js_json_syntax.asp), with keys `match,span,time` that correspond with each match's string-match, its span in the text, and the __delta__ from the previous match. When the algorithm reaches EOF, it must output a last match, with the match "EOF", span `[-1,-1]` and the delta time from the previous match (or begining of run, if there were not matches). For example:
+The output format for returning spans is a [json string](https://www.w3schools.com/js/js_json_syntax.asp), with keys `match,span,time` that correspond with each match's string-match, its span in the text, and the __delta__ from the previous match. When the algorithm reaches EOF, it must output a last match, with the match "EOF", span `[-1,-1]` and the delta time from the previous match (or begining of run, if there were no matches). For example:
 ```
 # in file example.txt
 abc is easy as 123
@@ -257,7 +255,6 @@ The regex and text file names are dependant on the **ordered** values in `_confi
 ### Param space configuration
 
 Here is an example of a definition of a **parameter space**:
-<!--[//]: # ( TODO explain generalisability of the param space, do this with both a general case and the example from the running example)-->
 ```python
 # task_name/_config.py
 PARAMETER_SPACE = OrderedDict({
@@ -290,8 +287,6 @@ The beauty of re-compare is that it can run on whatever parameterisation of the 
 
 
 
-<!--[//]: # ( TODO explain whose name correspond to what maybe view of the configfiles)-->
-<!--[//]: # ( TODO make sure each config file is given a different name)-->
 Both subdirectories have files with names that correspond to a selection of values from their space. Each such file start with either a `_` char, or `<some_prefix>_` as displayed below
 - The regex subdirectory has files whose names correspond with the `regex_space` in the `PARAMETER_SPACE`. So for the example above, the `regex` subdirectory will hold files with names
 ```bash
@@ -301,7 +296,7 @@ _easy_shallow
 _hard_shallow
 _hard_deep
 ```
-Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or with any pattern that the `regex_converter` module can convert to extended regex patterns
+Each file holds one regex pattern per line. These patterns can be either in exteded regex patterns, or in any regex syntax that the `regex_converter` module can convert to extended regex patterns
 - The text subdirectory has a similar structure to the regex dir. However, the text subdirectory can either be empty, in which case the text files will be downloaded from a url specified in the local config file and proccessed using the `_pre_processing.sh` script. In our example the text sub dir might look like this:
 ```bash
 $ ls task_name/text
@@ -323,16 +318,13 @@ regex_type = "protein_patterns"
 
 ## Output structure
 
-[//]: # ( TODO explain what canonical form is or change the wordings)
-[//]: # ( TODO explain what cannonical form is with figure)
-
-- The extended form regular expressions, converted from the task's patterns, are stored at `path/to/task/tmp/converted_regex_files`
+- The extended form regular expressions, converted from the task's patterns, are stored at `my_task/tmp/converted_regex_files`
 - Logs from the collection stage (in format [Log Format](#log-format)) are stored at `./logs`
 - Output plots are located at `./output`, where plot types are specified in `config.OUTPUT_TYPES`
 
-[//]: # ( TODO change dot to point add reference to running example)
-[//]: # ( TODO reword the the term index and explain with example)
-[//]: # ( TODO show example of the dot file to explain the meta data header line)
+<!--TODO show output on running exmple -->
+<!--[//]: # ( TODO reword the the term index and explain with example)-->
+<!--[//]: # ( TODO show example of the dot file to explain the meta data header line)-->
 	For each point in the parameter space, a consecutive matches file will be created, with its parameters listed inside. It's index in the parameter cube is part of the title.
 
 	For each possible cut in the parameter space, a `first_match` and `all_matches` plot is created, where its parameters are specified at `detailed_output.csv`
@@ -384,7 +376,7 @@ Description of the syntaxes can be found in the [Translator syntaxes](#translato
 The regex parsers are using the python [ply library](http://www.dabeaz.com/ply/).
 ply is a python lex/yacc library which allows building [lalr1](https://en.wikipedia.org/wiki/LALR_parser) grammars.
 
-The parsing is doen automatically during the collection step.
+The parsing is done automatically during the collection step.
 
 **usage:**
 The following are the manual instructions for the parsers (useful if you want to preprocess your own datasets).
@@ -454,7 +446,6 @@ Rules are defined like the following example:
     def p_star(self, p):
         """expression : expression STAR"""
         p[0] = Re2StarNode(p[1])
-[//]: # ( TODO explain the Re2starnode generates the syntax tree)
 
 
 The docstring is mandatory and tells ply exactly which expressions to match for this rule.
@@ -463,8 +454,10 @@ In our case we match any expression followed by a STAR token ('\*') in re2 synta
 p is an array of the tokens of the expression we are currently deriving.
 After the method ends p[0] holds the result of the current expression, in our case an ast.
 We create an ast node for a star token using the ast of the sub-expression in p[1] which was already calculated.
-Ast nodes all inherit from the base class Ast in generic_ast.py
-They all have a member names sons containing a list of the sub-tree's (can be empty).
+Ast nodes all inherit from the base class Ast in generic_ast.py .
+
+
+All Ast nodes have a member names sons containing a list of the sub-tree's (can be empty).
 They also implement a basic `to_re2_string()` method (can be overriden by an inheriting class)
 They all have a similar structure.
 Here's an example of an OR ast node for re2 grammar:
